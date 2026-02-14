@@ -2,8 +2,9 @@ import { render, screen } from '@testing-library/react';
 import FeatureCards from '@/components/landing/FeatureCards';
 
 describe('FeatureCards', () => {
-  it('renders all 6 feature cards', () => {
+  it('renders all 7 feature cards', () => {
     render(<FeatureCards />);
+    expect(screen.getByText('AI Image Generator')).toBeInTheDocument();
     expect(screen.getByText('AI Enhance')).toBeInTheDocument();
     expect(screen.getByText('Remove Background')).toBeInTheDocument();
     expect(screen.getByText('Generative Fill')).toBeInTheDocument();
@@ -15,5 +16,26 @@ describe('FeatureCards', () => {
   it('renders section heading', () => {
     render(<FeatureCards />);
     expect(screen.getByText('Everything You Need')).toBeInTheDocument();
+  });
+
+  it('renders AI Image Generator as a link to /generator', () => {
+    render(<FeatureCards />);
+    const generatorCard = screen.getByText('AI Image Generator').closest('a');
+    expect(generatorCard).toHaveAttribute('href', '/generator');
+  });
+
+  it('renders non-linked features as divs', () => {
+    render(<FeatureCards />);
+    const enhanceCard = screen.getByText('AI Enhance').closest('div');
+    expect(enhanceCard).toBeInTheDocument();
+    // Should not be inside a link
+    const enhanceLink = screen.getByText('AI Enhance').closest('a');
+    expect(enhanceLink).toBeNull();
+  });
+
+  it('renders feature descriptions', () => {
+    render(<FeatureCards />);
+    expect(screen.getByText(/Generate images from text descriptions/)).toBeInTheDocument();
+    expect(screen.getByText(/Upscale and sharpen images/)).toBeInTheDocument();
   });
 });

@@ -3,6 +3,7 @@ import {
   MAX_DIMENSION,
   MIN_DIMENSION,
   SUPPORTED_FORMATS,
+  MAX_GENERATE_PROMPT_LENGTH,
 } from './constants';
 
 export interface ValidationResult {
@@ -84,6 +85,27 @@ export function validatePrompt(prompt: string): ValidationResult {
   }
   if (trimmed.length > 500) {
     return { valid: false, error: 'Prompt must be 500 characters or less' };
+  }
+  return { valid: true };
+}
+
+export function validateGeneratePrompt(prompt: string): ValidationResult {
+  if (!prompt || typeof prompt !== 'string') {
+    return { valid: false, error: 'Prompt is required' };
+  }
+  const trimmed = prompt.trim();
+  if (trimmed.length === 0) {
+    return { valid: false, error: 'Prompt cannot be empty' };
+  }
+  if (trimmed.length > MAX_GENERATE_PROMPT_LENGTH) {
+    return { valid: false, error: `Prompt must be ${MAX_GENERATE_PROMPT_LENGTH} characters or less` };
+  }
+  return { valid: true };
+}
+
+export function validateNumberOfImages(num: number): ValidationResult {
+  if (!Number.isInteger(num) || num < 1 || num > 4) {
+    return { valid: false, error: 'Number of images must be between 1 and 4' };
   }
   return { valid: true };
 }

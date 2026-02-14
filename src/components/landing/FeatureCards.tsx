@@ -1,4 +1,23 @@
-const features = [
+import Link from 'next/link';
+
+interface Feature {
+  title: string;
+  description: string;
+  href?: string;
+  icon: React.ReactNode;
+}
+
+const features: Feature[] = [
+  {
+    title: 'AI Image Generator',
+    description: 'Generate images from text descriptions. Choose styles, aspect ratios, and create up to 4 images at once.',
+    href: '/generator',
+    icon: (
+      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM15 3l.588 2.06a2.25 2.25 0 001.352 1.352L19 7l-2.06.588a2.25 2.25 0 00-1.352 1.352L15 11l-.588-2.06a2.25 2.25 0 00-1.352-1.352L11 7l2.06-.588a2.25 2.25 0 001.352-1.352L15 3z" />
+      </svg>
+    ),
+  },
   {
     title: 'AI Enhance',
     description: 'Upscale and sharpen images using Real-ESRGAN. Enhance faces automatically.',
@@ -22,7 +41,7 @@ const features = [
     description: 'Paint over an area and describe what you want. AI fills it in seamlessly.',
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.905 1.905 0 00-2.391-2.391L13.476 7.5a15.99 15.99 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
       </svg>
     ),
   },
@@ -55,22 +74,37 @@ const features = [
   },
 ];
 
+function FeatureCard({ feature }: { feature: Feature }) {
+  const content = (
+    <>
+      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4">
+        {feature.icon}
+      </div>
+      <h3 className="font-semibold mb-2">{feature.title}</h3>
+      <p className="text-sm text-muted">{feature.description}</p>
+    </>
+  );
+
+  const className = "p-6 rounded-xl border border-border hover:border-primary/30 transition-colors block";
+
+  if (feature.href) {
+    return (
+      <Link href={feature.href} className={className}>
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className={className}>{content}</div>;
+}
+
 export default function FeatureCards() {
   return (
     <section className="py-16 px-4">
       <h2 className="text-2xl font-bold text-center mb-10">Everything You Need</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
         {features.map((feature) => (
-          <div
-            key={feature.title}
-            className="p-6 rounded-xl border border-border hover:border-primary/30 transition-colors"
-          >
-            <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4">
-              {feature.icon}
-            </div>
-            <h3 className="font-semibold mb-2">{feature.title}</h3>
-            <p className="text-sm text-muted">{feature.description}</p>
-          </div>
+          <FeatureCard key={feature.title} feature={feature} />
         ))}
       </div>
     </section>

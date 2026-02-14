@@ -18,6 +18,7 @@ export const MODELS = {
   enhance: 'nightmareai/real-esrgan' as const,
   removeBackground: 'cjwbw/rembg' as const,
   inpainting: 'lucataco/sdxl-inpainting' as const,
+  generate: 'stability-ai/sdxl' as const,
 };
 
 export async function runModel(
@@ -61,6 +62,42 @@ export async function removeBackground(imageUrl: string) {
   return runModel(MODELS.removeBackground, {
     image: imageUrl,
   });
+}
+
+export async function generateImage(
+  prompt: string,
+  negativePrompt: string,
+  width: number,
+  height: number,
+  numOutputs: number = 1
+): Promise<string[]> {
+  try {
+    const client = getClient();
+    const output = await client.run(MODELS.generate as `${string}/${string}`, {
+      input: {
+        prompt,
+        negative_prompt: negativePrompt,
+        width,
+        height,
+        num_outputs: numOutputs,
+        num_inference_steps: 30,
+        guidance_scale: 7.5,
+        scheduler: 'K_EULER',
+      },
+    });
+
+    if (Array.isArray(output)) {
+      return output.filter((item): item is string => typeof item === 'string');
+    }
+    if (typeof output === 'string') {
+      return [output];
+    }
+    throw new ReplicateError('Unexpected output format from Replicate');
+  } catch (error) {
+    if (error instanceof ReplicateError) throw error;
+    const message = error instanceof Error ? error.message : 'Unknown Replicate error';
+    throw new ReplicateError(message);
+  }
 }
 
 export async function inpaint(

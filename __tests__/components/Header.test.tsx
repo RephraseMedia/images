@@ -8,6 +8,20 @@ describe('Header', () => {
     expect(screen.getByText('AI Image Editor')).toBeInTheDocument();
   });
 
+  it('renders navigation links', () => {
+    render(<Header />);
+    expect(screen.getByText('Editor')).toBeInTheDocument();
+    expect(screen.getByText('Generator')).toBeInTheDocument();
+  });
+
+  it('links to correct pages', () => {
+    render(<Header />);
+    const editorLink = screen.getByText('Editor').closest('a');
+    expect(editorLink).toHaveAttribute('href', '/');
+    const generatorLink = screen.getByText('Generator').closest('a');
+    expect(generatorLink).toHaveAttribute('href', '/generator');
+  });
+
   it('renders New Image button in editor mode', () => {
     render(<Header showEditor onNewImage={jest.fn()} />);
     expect(screen.getByText('New Image')).toBeInTheDocument();

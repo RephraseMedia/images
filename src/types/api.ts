@@ -34,3 +34,14 @@ export interface RemoveObjectRequest {
   image: string; // base64
   mask: string; // base64 PNG mask
 }
+
+export interface GenerateRequest {
+  prompt: string;
+  style?: string;
+  aspectRatio?: string;
+  numberOfImages?: number;
+}
+
+export interface GenerateResponse {
+  images: string[]; // base64 data URIs
+}

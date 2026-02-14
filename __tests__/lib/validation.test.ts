@@ -5,8 +5,10 @@ import {
   validateBase64Image,
   validatePrompt,
   validateMask,
+  validateGeneratePrompt,
+  validateNumberOfImages,
 } from '@/lib/validation';
-import { MAX_FILE_SIZE } from '@/lib/constants';
+import { MAX_FILE_SIZE, MAX_GENERATE_PROMPT_LENGTH } from '@/lib/constants';
 
 describe('validateFileSize', () => {
   it('rejects zero-byte files', () => {
@@ -112,5 +114,63 @@ describe('validateMask', () => {
 
   it('accepts valid base64 mask', () => {
     expect(validateMask('data:image/png;base64,iVBORw0KGgo=').valid).toBe(true);
+  });
+});
+
+describe('validateGeneratePrompt', () => {
+  it('rejects empty prompt', () => {
+    expect(validateGeneratePrompt('').valid).toBe(false);
+    expect(validateGeneratePrompt('   ').valid).toBe(false);
+  });
+
+  it('rejects null/undefined prompt', () => {
+    expect(validateGeneratePrompt(null as unknown as string).valid).toBe(false);
+    expect(validateGeneratePrompt(undefined as unknown as string).valid).toBe(false);
+  });
+
+  it('accepts valid prompts', () => {
+    expect(validateGeneratePrompt('a beautiful sunset over the ocean').valid).toBe(true);
+  });
+
+  it('accepts prompts up to max length', () => {
+    expect(validateGeneratePrompt('a'.repeat(MAX_GENERATE_PROMPT_LENGTH)).valid).toBe(true);
+  });
+
+  it('rejects prompts exceeding max length', () => {
+    const result = validateGeneratePrompt('a'.repeat(MAX_GENERATE_PROMPT_LENGTH + 1));
+    expect(result.valid).toBe(false);
+    expect(result.error).toContain(`${MAX_GENERATE_PROMPT_LENGTH}`);
+  });
+});
+
+describe('validateNumberOfImages', () => {
+  it('accepts valid numbers 1-4', () => {
+    expect(validateNumberOfImages(1).valid).toBe(true);
+    expect(validateNumberOfImages(2).valid).toBe(true);
+    expect(validateNumberOfImages(3).valid).toBe(true);
+    expect(validateNumberOfImages(4).valid).toBe(true);
+  });
+
+  it('rejects zero', () => {
+    expect(validateNumberOfImages(0).valid).toBe(false);
+  });
+
+  it('rejects negative numbers', () => {
+    expect(validateNumberOfImages(-1).valid).toBe(false);
+  });
+
+  it('rejects numbers greater than 4', () => {
+    expect(validateNumberOfImages(5).valid).toBe(false);
+    expect(validateNumberOfImages(10).valid).toBe(false);
+  });
+
+  it('rejects non-integers', () => {
+    expect(validateNumberOfImages(2.5).valid).toBe(false);
+    expect(validateNumberOfImages(1.1).valid).toBe(false);
+  });
+
+  it('returns descriptive error message', () => {
+    const result = validateNumberOfImages(5);
+    expect(result.error).toContain('between 1 and 4');
   });
 });

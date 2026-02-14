@@ -18,6 +18,21 @@ export default function Header({ showEditor, onNewImage, children }: HeaderProps
         <span>AI Image Editor</span>
       </Link>
 
+      <nav className="hidden sm:flex items-center gap-1 ml-4">
+        <Link
+          href="/"
+          className="px-3 py-1.5 text-sm rounded-lg hover:bg-secondary transition-colors"
+        >
+          Editor
+        </Link>
+        <Link
+          href="/generator"
+          className="px-3 py-1.5 text-sm rounded-lg hover:bg-secondary transition-colors"
+        >
+          Generator
+        </Link>
+      </nav>
+
       {showEditor && onNewImage && (
         <button
           onClick={onNewImage}
