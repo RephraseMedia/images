@@ -43,6 +43,12 @@ export default function Header({ showEditor, onNewImage, children }: HeaderProps
         >
           BG Remover
         </Link>
+        <Link
+          href="/presentation-maker"
+          className="px-3 py-1.5 text-sm rounded-lg hover:bg-secondary transition-colors"
+        >
+          Presentations
+        </Link>
       </nav>
 
       {showEditor && onNewImage && (

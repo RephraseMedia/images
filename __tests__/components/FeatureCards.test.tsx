@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import FeatureCards from '@/components/landing/FeatureCards';
 
 describe('FeatureCards', () => {
-  it('renders all 8 feature cards', () => {
+  it('renders all 9 feature cards', () => {
     render(<FeatureCards />);
     expect(screen.getByText('AI Image Generator')).toBeInTheDocument();
     expect(screen.getByText('AI Enhance')).toBeInTheDocument();
@@ -11,6 +11,7 @@ describe('FeatureCards', () => {
     expect(screen.getByText('Replace Background')).toBeInTheDocument();
     expect(screen.getByText('Remove Objects')).toBeInTheDocument();
     expect(screen.getByText('Image Converter')).toBeInTheDocument();
+    expect(screen.getByText('AI Presentation Maker')).toBeInTheDocument();
     expect(screen.getByText('Download')).toBeInTheDocument();
   });
 
@@ -44,6 +45,12 @@ describe('FeatureCards', () => {
     // Should not be inside a link
     const enhanceLink = screen.getByText('AI Enhance').closest('a');
     expect(enhanceLink).toBeNull();
+  });
+
+  it('renders AI Presentation Maker as a link to /presentation-maker', () => {
+    render(<FeatureCards />);
+    const presentationCard = screen.getByText('AI Presentation Maker').closest('a');
+    expect(presentationCard).toHaveAttribute('href', '/presentation-maker');
   });
 
   it('renders feature descriptions', () => {
