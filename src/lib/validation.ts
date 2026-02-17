@@ -4,7 +4,10 @@ import {
   MIN_DIMENSION,
   SUPPORTED_FORMATS,
   MAX_GENERATE_PROMPT_LENGTH,
+  MAX_PRESENTATION_TOPIC_LENGTH,
 } from './constants';
+import { MIN_SLIDES, MAX_SLIDES, PRESENTATION_STYLE_OPTIONS } from '@/types/presentation';
+import type { PresentationStyle } from '@/types/presentation';
 
 export interface ValidationResult {
   valid: boolean;
@@ -115,4 +118,33 @@ export function validateMask(mask: string): ValidationResult {
     return { valid: false, error: 'Mask data is required' };
   }
   return validateBase64Image(mask);
+}
+
+export function validatePresentationTopic(topic: string): ValidationResult {
+  if (!topic || typeof topic !== 'string') {
+    return { valid: false, error: 'Topic is required' };
+  }
+  const trimmed = topic.trim();
+  if (trimmed.length === 0) {
+    return { valid: false, error: 'Topic cannot be empty' };
+  }
+  if (trimmed.length > MAX_PRESENTATION_TOPIC_LENGTH) {
+    return { valid: false, error: `Topic must be ${MAX_PRESENTATION_TOPIC_LENGTH} characters or less` };
+  }
+  return { valid: true };
+}
+
+export function validateSlideCount(count: number): ValidationResult {
+  if (!Number.isInteger(count) || count < MIN_SLIDES || count > MAX_SLIDES) {
+    return { valid: false, error: `Slide count must be between ${MIN_SLIDES} and ${MAX_SLIDES}` };
+  }
+  return { valid: true };
+}
+
+export function validatePresentationStyle(style: string): ValidationResult {
+  const validStyles = PRESENTATION_STYLE_OPTIONS.map((s) => s.id);
+  if (!validStyles.includes(style as PresentationStyle)) {
+    return { valid: false, error: `Invalid style. Must be one of: ${validStyles.join(', ')}` };
+  }
+  return { valid: true };
 }

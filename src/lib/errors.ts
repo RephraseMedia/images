@@ -35,6 +35,13 @@ export class ReplicateError extends AppError {
   }
 }
 
+export class AnthropicError extends AppError {
+  constructor(message: string) {
+    super(message, 502, 'ANTHROPIC_ERROR');
+    this.name = 'AnthropicError';
+  }
+}
+
 export function errorResponse(error: unknown): NextResponse {
   if (error instanceof AppError) {
     return NextResponse.json(
