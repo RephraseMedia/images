@@ -31,6 +31,12 @@ export default function Header({ showEditor, onNewImage, children }: HeaderProps
         >
           Generator
         </Link>
+        <Link
+          href="/converter"
+          className="px-3 py-1.5 text-sm rounded-lg hover:bg-secondary transition-colors"
+        >
+          Converter
+        </Link>
       </nav>
 
       {showEditor && onNewImage && (

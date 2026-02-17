@@ -6,6 +6,7 @@ interface DropZoneProps {
   onFiles: (files: File[]) => void;
   accept?: string;
   maxSize?: number;
+  multiple?: boolean;
   children?: React.ReactNode;
   className?: string;
 }
@@ -13,6 +14,7 @@ interface DropZoneProps {
 export default function DropZone({
   onFiles,
   accept = 'image/*',
+  multiple = false,
   children,
   className = '',
 }: DropZoneProps) {
@@ -69,6 +71,7 @@ export default function DropZone({
         ref={inputRef}
         type="file"
         accept={accept}
+        multiple={multiple}
         onChange={handleChange}
         className="hidden"
         aria-hidden="true"

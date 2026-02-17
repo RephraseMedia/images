@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import FeatureCards from '@/components/landing/FeatureCards';
 
 describe('FeatureCards', () => {
-  it('renders all 7 feature cards', () => {
+  it('renders all 8 feature cards', () => {
     render(<FeatureCards />);
     expect(screen.getByText('AI Image Generator')).toBeInTheDocument();
     expect(screen.getByText('AI Enhance')).toBeInTheDocument();
@@ -10,6 +10,7 @@ describe('FeatureCards', () => {
     expect(screen.getByText('Generative Fill')).toBeInTheDocument();
     expect(screen.getByText('Replace Background')).toBeInTheDocument();
     expect(screen.getByText('Remove Objects')).toBeInTheDocument();
+    expect(screen.getByText('Image Converter')).toBeInTheDocument();
     expect(screen.getByText('Download')).toBeInTheDocument();
   });
 
@@ -22,6 +23,12 @@ describe('FeatureCards', () => {
     render(<FeatureCards />);
     const generatorCard = screen.getByText('AI Image Generator').closest('a');
     expect(generatorCard).toHaveAttribute('href', '/generator');
+  });
+
+  it('renders Image Converter as a link to /converter', () => {
+    render(<FeatureCards />);
+    const converterCard = screen.getByText('Image Converter').closest('a');
+    expect(converterCard).toHaveAttribute('href', '/converter');
   });
 
   it('renders non-linked features as divs', () => {

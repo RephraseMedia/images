@@ -12,6 +12,7 @@ describe('Header', () => {
     render(<Header />);
     expect(screen.getByText('Editor')).toBeInTheDocument();
     expect(screen.getByText('Generator')).toBeInTheDocument();
+    expect(screen.getByText('Converter')).toBeInTheDocument();
   });
 
   it('links to correct pages', () => {
@@ -20,6 +21,8 @@ describe('Header', () => {
     expect(editorLink).toHaveAttribute('href', '/');
     const generatorLink = screen.getByText('Generator').closest('a');
     expect(generatorLink).toHaveAttribute('href', '/generator');
+    const converterLink = screen.getByText('Converter').closest('a');
+    expect(converterLink).toHaveAttribute('href', '/converter');
   });
 
   it('renders New Image button in editor mode', () => {

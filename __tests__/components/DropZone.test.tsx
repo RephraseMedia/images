@@ -47,6 +47,26 @@ describe('DropZone', () => {
     expect(handleFiles).toHaveBeenCalledWith([file]);
   });
 
+  it('passes multiple prop to file input', () => {
+    render(
+      <DropZone onFiles={jest.fn()} multiple>
+        <p>Upload</p>
+      </DropZone>
+    );
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    expect(input.multiple).toBe(true);
+  });
+
+  it('defaults multiple to false', () => {
+    render(
+      <DropZone onFiles={jest.fn()}>
+        <p>Upload</p>
+      </DropZone>
+    );
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+    expect(input.multiple).toBe(false);
+  });
+
   it('applies drag-over styles', () => {
     render(
       <DropZone onFiles={jest.fn()}>
