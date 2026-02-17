@@ -37,6 +37,12 @@ export default function Header({ showEditor, onNewImage, children }: HeaderProps
         >
           Converter
         </Link>
+        <Link
+          href="/background-remover"
+          className="px-3 py-1.5 text-sm rounded-lg hover:bg-secondary transition-colors"
+        >
+          BG Remover
+        </Link>
       </nav>
 
       {showEditor && onNewImage && (

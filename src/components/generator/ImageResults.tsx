@@ -49,6 +49,7 @@ export default function ImageResults({ images }: ImageResultsProps) {
       >
         {images.map((image, index) => (
           <div key={index} className="group relative rounded-xl overflow-hidden border border-border">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={image}
               alt={`Generated image ${index + 1}`}

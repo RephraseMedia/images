@@ -13,6 +13,7 @@ describe('Header', () => {
     expect(screen.getByText('Editor')).toBeInTheDocument();
     expect(screen.getByText('Generator')).toBeInTheDocument();
     expect(screen.getByText('Converter')).toBeInTheDocument();
+    expect(screen.getByText('BG Remover')).toBeInTheDocument();
   });
 
   it('links to correct pages', () => {
@@ -23,6 +24,8 @@ describe('Header', () => {
     expect(generatorLink).toHaveAttribute('href', '/generator');
     const converterLink = screen.getByText('Converter').closest('a');
     expect(converterLink).toHaveAttribute('href', '/converter');
+    const bgRemoverLink = screen.getByText('BG Remover').closest('a');
+    expect(bgRemoverLink).toHaveAttribute('href', '/background-remover');
   });
 
   it('renders New Image button in editor mode', () => {

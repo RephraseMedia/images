@@ -31,6 +31,12 @@ describe('FeatureCards', () => {
     expect(converterCard).toHaveAttribute('href', '/converter');
   });
 
+  it('renders Remove Background as a link to /background-remover', () => {
+    render(<FeatureCards />);
+    const bgRemoverCard = screen.getByText('Remove Background').closest('a');
+    expect(bgRemoverCard).toHaveAttribute('href', '/background-remover');
+  });
+
   it('renders non-linked features as divs', () => {
     render(<FeatureCards />);
     const enhanceCard = screen.getByText('AI Enhance').closest('div');

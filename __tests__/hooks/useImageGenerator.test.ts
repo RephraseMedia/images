@@ -1,9 +1,12 @@
 import { renderHook, act } from '@testing-library/react';
+import { showToast } from '@/components/ui/Toast';
 
 // Must mock before importing the hook
 jest.mock('@/components/ui/Toast', () => ({
   showToast: jest.fn(),
 }));
+
+const mockShowToast = jest.mocked(showToast);
 
 // Mock fetch globally
 const mockFetch = jest.fn();
@@ -66,15 +69,15 @@ describe('useImageGenerator', () => {
   });
 
   it('shows error toast for empty prompt', async () => {
-    const { showToast } = require('@/components/ui/Toast');
+
     const { result } = renderHook(() => useImageGenerator());
     await act(async () => { await result.current.generate(); });
-    expect(showToast).toHaveBeenCalledWith('error', 'Please enter a prompt');
+    expect(mockShowToast).toHaveBeenCalledWith('error', 'Please enter a prompt');
     expect(result.current.isGenerating).toBe(false);
   });
 
   it('generates images successfully', async () => {
-    const { showToast } = require('@/components/ui/Toast');
+
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({ images: ['data:image/png;base64,result1'] }),
@@ -87,7 +90,7 @@ describe('useImageGenerator', () => {
 
     expect(result.current.isGenerating).toBe(false);
     expect(result.current.generatedImages).toEqual(['data:image/png;base64,result1']);
-    expect(showToast).toHaveBeenCalledWith('success', 'Generated 1 image!');
+    expect(mockShowToast).toHaveBeenCalledWith('success', 'Generated 1 image!');
   });
 
   it('sends correct request body', async () => {
@@ -119,7 +122,7 @@ describe('useImageGenerator', () => {
   });
 
   it('handles API error response', async () => {
-    const { showToast } = require('@/components/ui/Toast');
+
     mockFetch.mockResolvedValue({
       ok: false,
       json: async () => ({ error: 'Rate limited' }),
@@ -131,11 +134,11 @@ describe('useImageGenerator', () => {
 
     expect(result.current.isGenerating).toBe(false);
     expect(result.current.error).toBe('Rate limited');
-    expect(showToast).toHaveBeenCalledWith('error', 'Rate limited');
+    expect(mockShowToast).toHaveBeenCalledWith('error', 'Rate limited');
   });
 
   it('handles network error', async () => {
-    const { showToast } = require('@/components/ui/Toast');
+
     mockFetch.mockRejectedValue(new Error('Network error'));
 
     const { result } = renderHook(() => useImageGenerator());
@@ -144,11 +147,11 @@ describe('useImageGenerator', () => {
 
     expect(result.current.isGenerating).toBe(false);
     expect(result.current.error).toBe('Network error');
-    expect(showToast).toHaveBeenCalledWith('error', 'Network error');
+    expect(mockShowToast).toHaveBeenCalledWith('error', 'Network error');
   });
 
   it('pluralizes success message for multiple images', async () => {
-    const { showToast } = require('@/components/ui/Toast');
+
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({ images: ['img1', 'img2', 'img3'] }),
@@ -158,7 +161,7 @@ describe('useImageGenerator', () => {
     act(() => result.current.setPrompt('cats'));
     await act(async () => { await result.current.generate(); });
 
-    expect(showToast).toHaveBeenCalledWith('success', 'Generated 3 images!');
+    expect(mockShowToast).toHaveBeenCalledWith('success', 'Generated 3 images!');
   });
 
   it('clears previous images when generating', async () => {

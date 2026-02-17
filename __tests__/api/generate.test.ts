@@ -4,6 +4,8 @@
 import { POST } from '@/app/api/generate/route';
 import { NextRequest } from 'next/server';
 import { resetRateLimit } from '@/lib/rateLimit';
+import { generateImage } from '@/lib/replicate';
+import { urlToBase64 } from '@/lib/imageUtils';
 
 jest.mock('@/lib/replicate', () => ({
   generateImage: jest.fn().mockResolvedValue(['https://replicate.com/output1.png']),
@@ -14,6 +16,9 @@ jest.mock('@/lib/imageUtils', () => ({
   ...jest.requireActual('@/lib/imageUtils'),
   urlToBase64: jest.fn().mockResolvedValue('data:image/png;base64,generatedimage'),
 }));
+
+const mockGenerateImage = jest.mocked(generateImage);
+const mockUrlToBase64 = jest.mocked(urlToBase64);
 
 function createRequest(body: object): NextRequest {
   return new NextRequest('http://localhost:3000/api/generate', {
@@ -26,8 +31,7 @@ function createRequest(body: object): NextRequest {
 describe('POST /api/generate', () => {
   beforeEach(() => {
     resetRateLimit();
-    const { generateImage } = require('@/lib/replicate');
-    generateImage.mockResolvedValue(['https://replicate.com/output1.png']);
+    mockGenerateImage.mockResolvedValue(['https://replicate.com/output1.png']);
   });
 
   it('returns generated images on success', async () => {
@@ -52,12 +56,11 @@ describe('POST /api/generate', () => {
   });
 
   it('appends style suffix to prompt', async () => {
-    const { generateImage } = require('@/lib/replicate');
     await POST(createRequest({
       prompt: 'a cat',
       style: 'anime',
     }));
-    expect(generateImage).toHaveBeenCalledWith(
+    expect(mockGenerateImage).toHaveBeenCalledWith(
       expect.stringContaining('anime style'),
       expect.any(String),
       expect.any(Number),
@@ -67,12 +70,11 @@ describe('POST /api/generate', () => {
   });
 
   it('uses correct dimensions for aspect ratio', async () => {
-    const { generateImage } = require('@/lib/replicate');
     await POST(createRequest({
       prompt: 'a landscape',
       aspectRatio: '16:9',
     }));
-    expect(generateImage).toHaveBeenCalledWith(
+    expect(mockGenerateImage).toHaveBeenCalledWith(
       expect.any(String),
       expect.any(String),
       1344,
@@ -82,14 +84,12 @@ describe('POST /api/generate', () => {
   });
 
   it('handles multiple images', async () => {
-    const { generateImage } = require('@/lib/replicate');
-    const { urlToBase64 } = require('@/lib/imageUtils');
-    generateImage.mockResolvedValue([
+    mockGenerateImage.mockResolvedValue([
       'https://replicate.com/out1.png',
       'https://replicate.com/out2.png',
       'https://replicate.com/out3.png',
     ]);
-    urlToBase64.mockResolvedValue('data:image/png;base64,img');
+    mockUrlToBase64.mockResolvedValue('data:image/png;base64,img');
 
     const response = await POST(createRequest({
       prompt: 'cats playing',
@@ -184,8 +184,7 @@ describe('POST /api/generate', () => {
   });
 
   it('returns 502 when replicate fails', async () => {
-    const { generateImage } = require('@/lib/replicate');
-    generateImage.mockRejectedValue(new Error('Replicate API error'));
+    mockGenerateImage.mockRejectedValue(new Error('Replicate API error'));
 
     const response = await POST(createRequest({ prompt: 'a cat' }));
     expect(response.status).toBe(500);

@@ -72,7 +72,6 @@ export function useImageConverter() {
     const currentState = state;
     const format = currentState.outputFormat;
     const quality = currentState.quality;
-    const formatOption = FORMAT_OPTIONS.find((f) => f.id === format)!;
 
     for (const file of currentState.files) {
       if (file.status !== 'pending' && file.status !== 'error') continue;
